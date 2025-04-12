@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.meal_prep_planner_app.screens.HomeScreen
 import com.example.meal_prep_planner_app.ui.theme.MealPrepPlannerAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,7 +20,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MealPrepPlannerAppTheme {
-
+                HomeScreen()
             }
         }
     }
