@@ -34,7 +34,7 @@ fun HomeScreen() {
     val meals = listOf(
         Meal("BREAKFAST", "8:00 AM", "Avocado toast with poached eggs"),
         Meal("LUNCH", "2:00 PM", "Grilled chicken salad"),
-        Meal("DINNER", "6:00 PM", "Vegetable stir fry with tofu")
+        Meal("DINNER", "7:00 PM", "Vegetable stir fry with tofu")
     )
 
     val popularRecipes = listOf(
