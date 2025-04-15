@@ -39,7 +39,7 @@ fun HomeScreen() {
 
     val popularRecipes = listOf(
         Recipe("Pasta Carbonara", R.drawable.pasta_sample),
-        Recipe("Beef Curry", R.drawable.curry_sample),
+        Recipe("Chicken Curry", R.drawable.curry_sample),
         Recipe("Greek Salad", R.drawable.salad_sample)
     )
 
