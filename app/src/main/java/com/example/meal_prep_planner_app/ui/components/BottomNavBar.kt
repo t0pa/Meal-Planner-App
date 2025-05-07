@@ -2,12 +2,6 @@ package com.example.meal_prep_planner_app.ui.components
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -17,17 +11,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.meal_prep_planner_app.ui.theme.NavBarWhite
 import com.example.meal_prep_planner_app.ui.theme.PastelGreen
+import androidx.compose.runtime.getValue
 
 @Composable
-fun BottomNavBar(modifier: Modifier = Modifier) {
-    val items = listOf(
-        BottomNavItem("Home", Icons.Default.Home),
-        BottomNavItem("Weekly Planner", Icons.Default.DateRange),
-        BottomNavItem("Search Meals", Icons.Default.Search),
-        BottomNavItem("Profile", Icons.Default.Person)
-    )
+fun BottomNavBar(
+    items: List<BottomNavItem>,
+    navController: NavController,
+    modifier: Modifier = Modifier
+) {
+    val currentDestination by navController.currentBackStackEntryAsState()
+    val currentRoute = currentDestination?.destination?.route
 
     NavigationBar(
         modifier = modifier.height(110.dp),
@@ -43,8 +40,16 @@ fun BottomNavBar(modifier: Modifier = Modifier) {
                         tint = NavBarWhite
                     )
                 },
-                selected = item.title == "Home",
-                onClick = { /* handle navigation */ },
+                selected = item.route == currentRoute,
+                onClick = {
+                    if (currentRoute != item.route) {
+                        navController.navigate(item.route) {
+                            popUpTo(navController.graph.startDestinationId) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = NavBarWhite,
                     unselectedIconColor = NavBarWhite.copy(alpha = 0.8f),
@@ -53,7 +58,7 @@ fun BottomNavBar(modifier: Modifier = Modifier) {
             )
         }
     }
-
 }
 
-data class BottomNavItem(val title: String, val icon: ImageVector)
+
+data class BottomNavItem(val title: String, val icon: ImageVector, val route: String)
