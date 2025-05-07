@@ -6,6 +6,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -25,7 +26,7 @@ fun BottomNavBar(modifier: Modifier = Modifier) {
         BottomNavItem("Home", Icons.Default.Home),
         BottomNavItem("Weekly Planner", Icons.Default.DateRange),
         BottomNavItem("Search Meals", Icons.Default.Search),
-        BottomNavItem("Favorites", Icons.Default.Favorite)
+        BottomNavItem("Profile", Icons.Default.Person)
     )
 
     NavigationBar(

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -40,7 +39,12 @@ fun HomeScreen() {
     val popularRecipes = listOf(
         Recipe("Pasta Carbonara", R.drawable.pasta_sample),
         Recipe("Chicken Curry", R.drawable.curry_sample),
-        Recipe("Greek Salad", R.drawable.salad_sample)
+        Recipe("Greek Salad", R.drawable.salad_sample),
+        Recipe("Beef Stroganoff", R.drawable.beef_stroganoff_sample),
+        Recipe("Margherita Pizza", R.drawable.pizza_sample),
+        Recipe("Sushi Platter", R.drawable.sushi_sample),
+        Recipe("Tacos al Pastor", R.drawable.tacos_sample),
+        Recipe("Tom Yum Soup", R.drawable.tom_yum_sample)
     )
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -90,7 +94,7 @@ fun HomeScreen() {
                 }
             }
 
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.height(120.dp))
         }
 
         BottomNavBar(
