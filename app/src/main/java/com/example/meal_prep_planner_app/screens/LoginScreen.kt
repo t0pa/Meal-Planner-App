@@ -113,7 +113,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onRegisterClick: () -> Unit) {
                     .height(50.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF388E3C)) // Dark green
             ) {
-                Text("Login", color = Color.White, fontSize = 18.sp)
+                Text("Loginn", color = Color.White, fontSize = 18.sp)
             }
 
             Spacer(modifier = Modifier.height(8.dp))
