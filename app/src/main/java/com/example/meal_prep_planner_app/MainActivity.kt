@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.meal_prep_planner_app.screens.HomeScreen
 import com.example.meal_prep_planner_app.screens.LoginScreen
+import com.example.meal_prep_planner_app.screens.RegistrationScreen
 import com.example.meal_prep_planner_app.ui.theme.MealPrepPlannerAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,7 +22,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MealPrepPlannerAppTheme {
-                LoginScreen(onLoginSuccess = { /*TODO: Handle login success navigation*/ }, onRegisterClick = { /*TODO: Handle register navigation*/ })
+               // LoginScreen(onLoginSuccess = { /*TODO: Handle login success navigation*/ }, onRegisterClick = { /*TODO: Handle register navigation*/ })
+               // RegistrationScreen(
+              //      onRegisterSuccess = { /* TODO: Handle registration success navigation */ },
+                //    onBackToLoginClick = { /* TODO: Handle back to login navigation */ }
+               // )
             }
         }
     }
