@@ -1,4 +1,4 @@
-package com.example.meal_prep_planner_app.screens
+package com.example.meal_prep_planner_app
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -14,6 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.meal_prep_planner_app.screens.HomeScreen
+import com.example.meal_prep_planner_app.screens.ProfileScreen
+import com.example.meal_prep_planner_app.screens.SearchMealsScreen
+import com.example.meal_prep_planner_app.screens.WeeklyPlannerScreen
 import com.example.meal_prep_planner_app.ui.components.BottomNavBar
 import com.example.meal_prep_planner_app.ui.components.BottomNavItem
 

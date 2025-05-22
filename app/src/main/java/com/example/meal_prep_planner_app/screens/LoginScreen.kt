@@ -19,11 +19,13 @@ import androidx.compose.ui.graphics.painter.Painter
 import com.example.meal_prep_planner_app.R
 
 @Composable
-fun LoginScreen(onLoginSuccess: () -> Unit, onRegisterClick: () -> Unit) {
+fun LoginScreen(
+    onLoginSuccess: () -> Unit,
+    onRegisterClick: () -> Unit
+) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    // Load your logo as a painter
     val logo: Painter = painterResource(id = R.drawable.meal_prep_logo_green_removebg_preview)
 
     Box(
@@ -32,36 +34,37 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onRegisterClick: () -> Unit) {
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color(0xFFE0F2F7), // Light greenish-blue
-                        Color(0xFFC8E6C9)  // Light green
+                        Color(0xFFE0F2F7),
+                        Color(0xFFC8E6C9)
                     )
                 )
             ),
-        contentAlignment = Alignment.Center // This centers the Column
+        contentAlignment = Alignment.Center
     ) {
-        // Logo on a separate layer, positioned at the top center
+        Image(
+            painter = logo,
+            contentDescription = "MealPrep Logo",
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(top = 32.dp)
+                .size(350.dp)
+        )
 
-            Image(
-                painter = logo,
-                contentDescription = "MealPrep Logo",
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(top = 32.dp) // Adjust top padding as needed
-                    .size(350.dp) // Adjust size as needed
-            )
-
-
-        // Column containing the login form elements
         Column(
             modifier = Modifier
-                .padding(horizontal = 24.dp) // Add horizontal padding
-                .padding(top = 200.dp) // Push the column down below the logo (adjust as needed)
-                .fillMaxWidth(), // Make the column take full width
+                .padding(horizontal = 24.dp)
+                .padding(top = 200.dp)
+                .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Spacer(modifier = Modifier.height(25.dp))
-            Text("Login", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = Color(0xFF388E3C)) // Dark green
+            Text(
+                "Login",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF388E3C)
+            )
 
 
             OutlinedTextField(
@@ -111,7 +114,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onRegisterClick: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF388E3C)) // Dark green
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF388E3C))
             ) {
                 Text("Loginn", color = Color.White, fontSize = 18.sp)
             }
@@ -119,7 +122,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit, onRegisterClick: () -> Unit) {
             Spacer(modifier = Modifier.height(8.dp))
 
             TextButton(onClick = onRegisterClick) {
-                Text("Don't have an account? Register here", color = Color(0xFF1B5E20)) // Darker green
+                Text("Don't have an account? Register here", color = Color(0xFF1B5E20))
             }
         }
     }
