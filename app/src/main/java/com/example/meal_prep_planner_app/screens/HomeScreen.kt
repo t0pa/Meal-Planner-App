@@ -49,7 +49,7 @@ fun HomeScreen() {
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(top = 40.dp)
+                .padding(top = 30.dp)
         ) {
             GreetingSection(name = "John")
 

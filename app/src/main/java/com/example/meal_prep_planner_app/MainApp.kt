@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -23,8 +24,9 @@ import com.example.meal_prep_planner_app.ui.components.BottomNavItem
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainApp() {
-    val navController = rememberNavController()
+fun MainApp(navController: NavController) {
+    val mainNavController = rememberNavController()
+
     val items = listOf(
         BottomNavItem("Home", Icons.Default.Home, "home"),
         BottomNavItem("Weekly Planner", Icons.Default.DateRange, "weekly"),
@@ -36,12 +38,12 @@ fun MainApp() {
         bottomBar = {
             BottomNavBar(
                 items = items,
-                navController = navController
+                navController = mainNavController
             )
         }
     ) { innerPadding ->
         NavHost(
-            navController = navController,
+            navController = mainNavController,
             startDestination = "home",
             modifier = Modifier.padding(innerPadding)
         ) {

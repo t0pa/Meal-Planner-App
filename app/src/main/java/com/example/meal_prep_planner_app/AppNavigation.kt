@@ -26,6 +26,8 @@ fun AppNavigation() {
                 onRegisterClick = {} // handle registration logic
             )
         }
-        composable("main") { MainApp() }
+        composable("main") {
+            MainApp(navController = navController)
+        }
     }
 }
