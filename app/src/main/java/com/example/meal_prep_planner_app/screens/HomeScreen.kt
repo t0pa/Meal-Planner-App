@@ -6,23 +6,19 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.meal_prep_planner_app.R
-import com.example.meal_prep_planner_app.ui.components.BottomNavBar
 import com.example.meal_prep_planner_app.ui.components.GreetingSection
 import com.example.meal_prep_planner_app.ui.components.Meal
 import com.example.meal_prep_planner_app.ui.components.MealCard
@@ -34,13 +30,18 @@ fun HomeScreen() {
     val meals = listOf(
         Meal("BREAKFAST", "8:00 AM", "Avocado toast with poached eggs"),
         Meal("LUNCH", "2:00 PM", "Grilled chicken salad"),
-        Meal("DINNER", "6:00 PM", "Vegetable stir fry with tofu")
+        Meal("DINNER", "7:00 PM", "Vegetable stir fry with tofu")
     )
 
     val popularRecipes = listOf(
         Recipe("Pasta Carbonara", R.drawable.pasta_sample),
         Recipe("Chicken Curry", R.drawable.curry_sample),
-        Recipe("Greek Salad", R.drawable.salad_sample)
+        Recipe("Greek Salad", R.drawable.salad_sample),
+        Recipe("Beef Stroganoff", R.drawable.beef_stroganoff_sample),
+        Recipe("Margherita Pizza", R.drawable.pizza_sample),
+        Recipe("Sushi Platter", R.drawable.sushi_sample),
+        Recipe("Tacos al Pastor", R.drawable.tacos_sample),
+        Recipe("Tom Yum Soup", R.drawable.tom_yum_sample)
     )
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -48,7 +49,7 @@ fun HomeScreen() {
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(top = 60.dp)
+                .padding(top = 30.dp)
         ) {
             GreetingSection(name = "John")
 
@@ -90,13 +91,7 @@ fun HomeScreen() {
                 }
             }
 
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.height(40.dp))
         }
-
-        BottomNavBar(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-        )
     }
 }
