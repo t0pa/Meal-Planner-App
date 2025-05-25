@@ -21,7 +21,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-
+            RegistrationScreen(
+                onRegisterSuccess = { /* TODO: Handle registration success navigation */ },
+                onBackToLoginClick = { /* TODO: Handle back to login navigation */ }
+            )
 
         }
     }
