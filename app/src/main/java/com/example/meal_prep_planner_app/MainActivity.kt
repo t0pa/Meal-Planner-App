@@ -21,13 +21,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MealPrepPlannerAppTheme {
-               // LoginScreen(onLoginSuccess = { /*TODO: Handle login success navigation*/ }, onRegisterClick = { /*TODO: Handle register navigation*/ })
-                RegistrationScreen(
-                   onRegisterSuccess = { /* TODO: Handle registration success navigation */ },
-                   onBackToLoginClick = { /* TODO: Handle back to login navigation */ }
-               )
-            }
+
+
         }
     }
 }
