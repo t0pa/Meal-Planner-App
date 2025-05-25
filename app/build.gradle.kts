@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
-   // id("com.google.dagger.hilt.android")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.firebase.firestore.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -61,7 +62,7 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.9.0")
 
 
-    dependencies {
+
         val room_version = "2.7.1"
 
         implementation("androidx.room:room-runtime:$room_version")
@@ -91,5 +92,11 @@ dependencies {
 
         // optional - Paging 3 Integration
         implementation("androidx.room:room-paging:$room_version")
-    }
+
+        implementation("com.google.dagger:hilt-android:2.56.2")
+        ksp("com.google.dagger:hilt-android-compiler:2.56.2")
+
+
+
+
 }

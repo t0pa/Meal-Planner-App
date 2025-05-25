@@ -1,6 +1,9 @@
 package com.example.meal_prep_planner_app.database
 
 import androidx.room.Database
+import androidx.room.RoomDatabase
+import com.example.meal_prep_planner_app.dao.*
+import com.example.meal_prep_planner_app.model.*
 
 @Database(
     entities = [
