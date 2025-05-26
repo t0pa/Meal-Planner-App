@@ -22,7 +22,7 @@ import com.example.meal_prep_planner_app.R
 import com.example.meal_prep_planner_app.ui.components.GreetingSection
 import com.example.meal_prep_planner_app.ui.components.Meal
 import com.example.meal_prep_planner_app.ui.components.MealCard
-import com.example.meal_prep_planner_app.ui.components.PopularRecipeCard
+import com.example.meal_prep_planner_app.ui.components.RecipeCard
 import com.example.meal_prep_planner_app.ui.components.Recipe
 
 @Composable
@@ -87,7 +87,7 @@ fun HomeScreen() {
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(popularRecipes) { recipe ->
-                    PopularRecipeCard(recipe = recipe)
+                    RecipeCard(recipe = recipe)
                 }
             }
 

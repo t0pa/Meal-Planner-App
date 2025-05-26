@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun PopularRecipeCard(recipe : Recipe){
+fun RecipeCard(recipe : Recipe){
     Card(
         modifier = Modifier
             .width(150.dp)
