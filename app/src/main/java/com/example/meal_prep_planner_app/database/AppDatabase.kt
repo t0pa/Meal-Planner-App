@@ -2,6 +2,7 @@ package com.example.meal_prep_planner_app.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverter
 import com.example.meal_prep_planner_app.dao.*
 import com.example.meal_prep_planner_app.model.*
 
@@ -13,7 +14,7 @@ import com.example.meal_prep_planner_app.model.*
         RecipeIngredient::class,
         Ingredient::class
     ],
-    version = 1
+    version = 3
 )
 abstract class AppDatabase : RoomDatabase() {
 

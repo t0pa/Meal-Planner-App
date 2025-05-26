@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltAndroidApp
-class MealPrepApp : Application() {
+class       MealPrepApp : Application() {
 
     @Inject
     lateinit var database: AppDatabase
@@ -18,15 +18,12 @@ class MealPrepApp : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        // Optional: trigger a no-op DB query to ensure DB is initialized
         CoroutineScope(Dispatchers.IO).launch {
-            try {
-                // Example: Test DB access (replace with your DAO method)
-                val allUsers = database.userDao().getAllUsers()
-                Log.d("DatabaseTest", "App launched, found ${allUsers.size} users.")
-            } catch (e: Exception) {
-                Log.e("DatabaseTest", "Error initializing DB: ${e.message}")
-            }
+            //Test you can run here
+            //database.userDao().insert(User(id = 1, email = "adnan.hajro@ibu.edu.ba", "SomePassword", "Adnan Hajro"))
+            //dummy query on database just to open the connection
+            database.userDao().getUserById(1)
+            Log.d("DatabaseTest", "Database initialized")
         }
-    }
+        }
 }
