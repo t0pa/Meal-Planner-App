@@ -20,9 +20,9 @@ class MealPlanRepositoryImpl @Inject constructor(
         mealPlanDao.delete(entity)
     }
 
-//    override suspend fun getMealPlanById(id: Int): MealPlan? {
-//        return mealPlanDao.getMealPlanById(id)
-//    }
+    override suspend fun getMealPlanById(id: Int): MealPlan? {
+        return mealPlanDao.getMealPlanById(id)
+    }
 
     override suspend fun getMealPlansByUser(userId: Int): List<MealPlan> {
         return mealPlanDao.getMealPlansByUser(userId)

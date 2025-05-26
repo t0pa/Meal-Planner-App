@@ -31,5 +31,5 @@ data class RecipeIngredient(
     val recipe_id: Int,
     val ingredient_id: Int,
     val quantity: Int,
-    val unit: Int
+    val unit: String
 )

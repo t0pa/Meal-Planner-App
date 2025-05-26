@@ -27,7 +27,6 @@ data class Recipe(
     val cook_time: Int,
     val servings: Int,
     val difficulty: String,
-    val category: Int,
     val image_url: String,
     val user_id: Int,
     val instructions: String

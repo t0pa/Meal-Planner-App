@@ -20,11 +20,15 @@ class RecipeRepositoryImpl @Inject constructor(
         recipeDao.delete(entity)
     }
 
-    override suspend fun getAllRecipes(): List<Recipe> {
-        return recipeDao.getAllRecipes()
+    override suspend fun getAllRecipesForUser(userId: Int): List<Recipe> {
+        return recipeDao.getAllRecipesForUser(userId)
     }
 
-//    override suspend fun getRecipeById(id: Int): Recipe? {
-//        return recipeDao.getRecipeById(id)
-//    }
+    override suspend fun getPublicRecipes(): List<Recipe> {
+        return recipeDao.getPublicRecipes()
+    }
+
+    override suspend fun getRecipeById(id: Int): Recipe? {
+        return recipeDao.getRecipeById(id)
+    }
 }

@@ -20,11 +20,7 @@ class IngredientRepositoryImpl @Inject constructor(
         ingredientDao.delete(entity)
     }
 
-    override suspend fun getAllIngredients(): List<Ingredient> {
-        return ingredientDao.getAllIngredients()
+    override suspend fun getIngredientById(id: Int): Ingredient? {
+        return ingredientDao.getIngredientById(id)
     }
-
-//    override suspend fun getIngredientById(id: Int): Ingredient? {
-//        return ingredientDao.getIngredientById(id)
-//    }
 }
