@@ -54,7 +54,7 @@ fun SearchMealsScreen() {
             Recipe("Margherita Pizza", R.drawable.pizza_sample),
             Recipe("Sushi Platter", R.drawable.sushi_sample),
             Recipe("Tacos al Pastor", R.drawable.tacos_sample),
-            Recipe("Tom Yum Soup", R.drawable.tom_yum_sample)
+            Recipe("Tom Yum Soup", R.drawable.tom_yum_sample) //
         )
     }
 
