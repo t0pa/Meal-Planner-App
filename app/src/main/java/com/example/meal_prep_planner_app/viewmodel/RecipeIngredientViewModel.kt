@@ -1,5 +1,4 @@
 package com.example.meal_prep_planner_app.viewmodel
-
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.meal_prep_planner_app.model.RecipeIngredient
