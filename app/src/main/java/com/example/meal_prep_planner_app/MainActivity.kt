@@ -6,7 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import com.example.meal_prep_planner_app.ui.navigation.AppNavigation
+import com.example.meal_prep_planner_app.ui.navigation.AppNavHost
 import com.example.meal_prep_planner_app.ui.theme.MealPrepPlannerAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MealPrepPlannerAppTheme {
-                AppNavigation()
+                AppNavHost()
             }
         }
     }

@@ -19,8 +19,8 @@ import com.example.meal_prep_planner_app.ui.screens.HomeScreen
 import com.example.meal_prep_planner_app.ui.screens.ProfileScreen
 import com.example.meal_prep_planner_app.ui.screens.SearchMealsScreen
 import com.example.meal_prep_planner_app.ui.screens.WeeklyPlannerScreen
-import com.example.meal_prep_planner_app.ui.components.BottomNavBar
-import com.example.meal_prep_planner_app.ui.components.BottomNavItem
+import com.example.meal_prep_planner_app.ui.screens.navigation.BottomNavBar
+import com.example.meal_prep_planner_app.ui.screens.navigation.BottomNavItem
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
