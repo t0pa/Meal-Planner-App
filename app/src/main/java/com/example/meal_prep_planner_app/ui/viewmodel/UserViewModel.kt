@@ -1,4 +1,4 @@
-package com.example.meal_prep_planner_app.viewmodel
+package com.example.meal_prep_planner_app.ui.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

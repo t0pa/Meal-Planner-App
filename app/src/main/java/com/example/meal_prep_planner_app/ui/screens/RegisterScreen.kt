@@ -1,4 +1,4 @@
-package com.example.meal_prep_planner_app.screens
+package com.example.meal_prep_planner_app.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -9,7 +9,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -19,12 +18,10 @@ import androidx.compose.ui.graphics.painter.Painter
 import com.example.meal_prep_planner_app.R
 
 @Composable
-fun LoginScreen(
-    onLoginSuccess: () -> Unit,
-    onRegisterClick: () -> Unit
-) {
+fun RegistrationScreen(onRegisterSuccess: () -> Unit, onBackToLoginClick: () -> Unit) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
 
     val logo: Painter = painterResource(id = R.drawable.meal_prep_logo_green_removebg_preview)
 
@@ -41,6 +38,7 @@ fun LoginScreen(
             ),
         contentAlignment = Alignment.Center
     ) {
+
         Image(
             painter = logo,
             contentDescription = "MealPrep Logo",
@@ -58,14 +56,8 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Spacer(modifier = Modifier.height(25.dp))
-            Text(
-                "Login",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF388E3C)
-            )
-
+            Spacer(modifier = Modifier.height(60.dp))
+            Text("Register", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = Color(0xFF388E3C))
 
             OutlinedTextField(
                 value = email,
@@ -102,13 +94,31 @@ fun LoginScreen(
                 )
             )
 
+            OutlinedTextField(
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                label = { Text("Confirm Password", color = Color.Gray) },
+                singleLine = true,
+                visualTransformation = PasswordVisualTransformation(),
+                modifier = Modifier.fillMaxWidth(),
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black,
+                    cursorColor = Color(0xFF388E3C),
+                    focusedIndicatorColor = Color(0xFF388E3C),
+                    unfocusedIndicatorColor = Color.Gray
+                )
+            )
+
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 onClick = {
-                    // Add authentication logic here
-                    if (email.isNotBlank() && password.isNotBlank()) {
-                        onLoginSuccess()
+                    // Add registration logic here
+                    if (email.isNotBlank() && password.isNotBlank() && password == confirmPassword) {
+                        onRegisterSuccess()
                     }
                 },
                 modifier = Modifier
@@ -116,13 +126,13 @@ fun LoginScreen(
                     .height(50.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF388E3C))
             ) {
-                Text("Loginn", color = Color.White, fontSize = 18.sp)
+                Text("Register", color = Color.White, fontSize = 18.sp)
             }
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            TextButton(onClick = onRegisterClick) {
-                Text("Don't have an account? Register here", color = Color(0xFF1B5E20))
+            TextButton(onClick = onBackToLoginClick) {
+                Text("Already have an account? Login here", color = Color(0xFF1B5E20))
             }
         }
     }
