@@ -11,5 +11,5 @@ data class User(
     val id: Int = 0,
     val email: String,
     val password_hash: String,
-    val fullName: String,
+    val name: String,
 )

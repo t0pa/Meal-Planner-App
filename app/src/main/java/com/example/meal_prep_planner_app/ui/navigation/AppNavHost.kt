@@ -29,6 +29,7 @@ import androidx.navigation.compose.NavHost
 import com.example.meal_prep_planner_app.ui.screens.HomeScreen
 import com.example.meal_prep_planner_app.ui.screens.LoginScreen
 import com.example.meal_prep_planner_app.ui.screens.ProfileScreen
+import com.example.meal_prep_planner_app.ui.screens.RegistrationScreen
 import com.example.meal_prep_planner_app.ui.screens.SearchMealsScreen
 import com.example.meal_prep_planner_app.ui.screens.WeeklyPlannerScreen
 import com.example.meal_prep_planner_app.ui.screens.navigation.BottomNavBar
@@ -60,25 +61,27 @@ fun AppNavHost(userViewModel: UserViewModel = hiltViewModel()) {
         Profile::class.qualifiedName
     )
 
+    LaunchedEffect(loggedUser) {
+        if (!isLoading) {
+            if (loggedUser == null && currentRoute != Login::class.qualifiedName) {
+                navController.navigate(Login) {
+                    popUpTo(Main) { inclusive = true }
+                    launchSingleTop = true
+                }
+            } else if (loggedUser != null && currentRoute != Home::class.qualifiedName) {
+                navController.navigate(Home) {
+                    popUpTo(Auth) { inclusive = true }
+                    launchSingleTop = true
+                }
+            }
+        }
+    }
+
     if (isLoading) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
         return
-    }
-
-    LaunchedEffect(loggedUser) {
-        if (loggedUser == null) {
-            navController.navigate(Login) {
-                popUpTo(Auth) { inclusive = true }
-                launchSingleTop = true
-            }
-        } else {
-            navController.navigate(Home) {
-                popUpTo(Auth) { inclusive = true }
-                launchSingleTop = true
-            }
-        }
     }
 
     Scaffold(
@@ -104,19 +107,29 @@ fun AppNavHost(userViewModel: UserViewModel = hiltViewModel()) {
             navigation<Auth>(startDestination = Login) {
                 composable<Login> {
                     LoginScreen(
+                        userViewModel = userViewModel,
                         onLoginSuccess = {
                             navController.navigate(Home) {
                                 popUpTo(Auth) { inclusive = true }
                             }
                         },
                         onRegisterClick = {
-                            navController.navigate(Register)
+                            navController.navigate(Register){
+                                launchSingleTop = true
+                            }
                         }
                     )
                 }
 
                 composable<Register> {
-                    // RegistrationScreen(...)
+                    RegistrationScreen(
+                        userViewModel = userViewModel,
+                        onLoginNav = {
+                            navController.navigate(Login) {
+                                popUpTo(Register) { inclusive = true }
+                            }
+                        }
+                    )
                 }
             }
 

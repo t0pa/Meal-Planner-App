@@ -17,14 +17,25 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.graphics.painter.Painter
 import com.example.meal_prep_planner_app.R
+import com.example.meal_prep_planner_app.ui.viewmodel.UserViewModel
 
 @Composable
 fun LoginScreen(
+    userViewModel: UserViewModel,
     onLoginSuccess: () -> Unit,
     onRegisterClick: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val loginStatus by userViewModel.loginStatus.collectAsState()
+
+    LaunchedEffect(loginStatus) {
+        loginStatus?.let { success ->
+            if(success){
+                onLoginSuccess()
+            }
+        }
+    }
 
     val logo: Painter = painterResource(id = R.drawable.meal_prep_logo_green_removebg_preview)
 
@@ -106,9 +117,8 @@ fun LoginScreen(
 
             Button(
                 onClick = {
-                    // Add authentication logic here
                     if (email.isNotBlank() && password.isNotBlank()) {
-                        onLoginSuccess()
+                        userViewModel.login(email, password)
                     }
                 },
                 modifier = Modifier
@@ -116,7 +126,7 @@ fun LoginScreen(
                     .height(50.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF388E3C))
             ) {
-                Text("Loginn", color = Color.White, fontSize = 18.sp)
+                Text("Log in", color = Color.White, fontSize = 18.sp)
             }
 
             Spacer(modifier = Modifier.height(8.dp))

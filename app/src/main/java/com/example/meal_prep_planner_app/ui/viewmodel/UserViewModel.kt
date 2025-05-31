@@ -50,7 +50,7 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val hashedPassword = hashPassword(password)
-                val user = User(email = email, password_hash = hashedPassword, fullName = name)
+                val user = User(email = email, password_hash = hashedPassword, name = name)
                 userRepo.insert(user)
                 _registrationSuccess.value = true
             } catch (e: Exception) {
