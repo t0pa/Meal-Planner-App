@@ -14,7 +14,7 @@ import com.example.meal_prep_planner_app.model.*
         RecipeIngredient::class,
         Ingredient::class
     ],
-    version = 3
+    version = 4
 )
 abstract class AppDatabase : RoomDatabase() {
 
