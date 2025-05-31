@@ -26,9 +26,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
+import com.example.meal_prep_planner_app.screens.ProfileScreen
 import com.example.meal_prep_planner_app.ui.screens.HomeScreen
 import com.example.meal_prep_planner_app.ui.screens.LoginScreen
-import com.example.meal_prep_planner_app.ui.screens.ProfileScreen
 import com.example.meal_prep_planner_app.ui.screens.RegistrationScreen
 import com.example.meal_prep_planner_app.ui.screens.SearchMealsScreen
 import com.example.meal_prep_planner_app.ui.screens.WeeklyPlannerScreen
@@ -144,7 +144,17 @@ fun AppNavHost(userViewModel: UserViewModel = hiltViewModel()) {
                     WeeklyPlannerScreen()
                 }
                 composable<Profile> {
-                    ProfileScreen()
+                    ProfileScreen(
+                        onLogout = {
+                            userViewModel.logout()
+                            navController.navigate(Login::class.qualifiedName!!) {
+                                popUpTo(Auth) { inclusive = true }
+                            }
+                        },
+                        onDelete = {
+                            // TBA : delete logic
+                        }
+                    )
                 }
             }
         }
