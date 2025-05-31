@@ -18,8 +18,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ProfileScreen(
     onLogout: () -> Unit = {},
-    onDelete: () -> Unit = {},
-    onNavigate: (String) -> Unit = {}
+    onDelete: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -51,7 +50,7 @@ fun ProfileScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(2.dp, Color(0xFF4CAF50), RoundedCornerShape(8.dp))
-                    .clickable { onNavigate("favorites") }
+                    //.clickable { onNavigate("favorites") }
                     .padding(horizontal = 24.dp, vertical = 16.dp)
             ) {
                 Text(
@@ -60,7 +59,7 @@ fun ProfileScreen(
                         fontWeight = FontWeight.Medium,
                         color = Color(0xFF4CAF50)
                     ),
-                    modifier = Modifier.align(Alignment.Center) // centrirano
+                    modifier = Modifier.align(Alignment.Center)
                 )
             }
         }
