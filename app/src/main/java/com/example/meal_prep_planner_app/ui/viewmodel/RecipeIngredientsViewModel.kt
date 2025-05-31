@@ -1,4 +1,9 @@
+<<<<<<<< HEAD:app/src/main/java/com/example/meal_prep_planner_app/ui/viewmodel/RecipeIngredientViewModel.kt
 package com.example.meal_prep_planner_app.viewmodel
+========
+package com.example.meal_prep_planner_app.ui.viewmodel
+
+>>>>>>>> 4aa9690ce224d96060d583a91efbf25b3d595cc0:app/src/main/java/com/example/meal_prep_planner_app/ui/viewmodel/RecipeIngredientsViewModel.kt
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.meal_prep_planner_app.model.RecipeIngredient

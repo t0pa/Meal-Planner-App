@@ -1,4 +1,4 @@
-package com.example.meal_prep_planner_app.screens
+package com.example.meal_prep_planner_app.ui.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi

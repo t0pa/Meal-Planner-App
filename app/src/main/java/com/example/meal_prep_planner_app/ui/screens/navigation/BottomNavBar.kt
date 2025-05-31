@@ -1,4 +1,4 @@
-package com.example.meal_prep_planner_app.ui.components
+package com.example.meal_prep_planner_app.ui.screens.navigation
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
