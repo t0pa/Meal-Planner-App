@@ -1,5 +1,6 @@
 package com.example.meal_prep_planner_app.ui.screens
 
+import RecipeCard
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -27,36 +28,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.meal_prep_planner_app.ui.components.Recipe
-import com.example.meal_prep_planner_app.ui.components.RecipeCard
 import androidx.compose.foundation.lazy.grid.items
-
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.meal_prep_planner_app.model.Recipe
+import com.example.meal_prep_planner_app.ui.viewmodel.RecipeViewModel
 
 @Composable
-fun SearchMealsScreen() {
+fun SearchMealsScreen(viewModel: RecipeViewModel = hiltViewModel()) {
     val searchQuery = remember { mutableStateOf("") }
-
+    val recipes by viewModel.recipes.collectAsState()
     val colorScheme = MaterialTheme.colorScheme
+    val selectedRecipe = remember { mutableStateOf<Recipe?>(null) } // 👈 Add this
 
-    val allRecipes = remember {
-        listOf(
-            Recipe("Pasta Carbonara", R.drawable.pasta_sample),
-            Recipe("Chicken Curry", R.drawable.curry_sample),
-            Recipe("Greek Salad", R.drawable.salad_sample),
-            Recipe("Beef Stroganoff", R.drawable.beef_stroganoff_sample),
-            Recipe("Margherita Pizza", R.drawable.pizza_sample),
-            Recipe("Sushi Platter", R.drawable.sushi_sample),
-            Recipe("Tacos al Pastor", R.drawable.tacos_sample),
-            Recipe("Tom Yum Soup", R.drawable.tom_yum_sample) //
-        )
+    val filteredRecipes = recipes.filter {
+        it.title.contains(searchQuery.value, ignoreCase = true)
     }
 
-    val filteredRecipes = if (searchQuery.value.isEmpty()) {
-        allRecipes
-    } else {
-        allRecipes.filter {
-            it.name.contains(searchQuery.value, ignoreCase = true)
-        }
+    LaunchedEffect(Unit) {
+        viewModel.loadRecipes(null) // or pass userId if needed
     }
 
     Column(
@@ -79,7 +71,6 @@ fun SearchMealsScreen() {
             modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
         )
 
-        // Search bar
         OutlinedTextField(
             value = searchQuery.value,
             onValueChange = { searchQuery.value = it },
@@ -88,14 +79,11 @@ fun SearchMealsScreen() {
                 .padding(horizontal = 16.dp),
             placeholder = { Text("Search for meals...") },
             leadingIcon = {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Search"
-                )
+                Icon(Icons.Default.Search, contentDescription = "Search")
             },
             shape = RoundedCornerShape(12.dp),
             colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                focusedIndicatorColor = colorScheme.primary,
                 unfocusedIndicatorColor = Color.Gray.copy(alpha = 0.5f),
                 focusedContainerColor = colorScheme.secondaryContainer,
                 unfocusedContainerColor = colorScheme.secondaryContainer
@@ -103,22 +91,54 @@ fun SearchMealsScreen() {
             singleLine = true
         )
 
+        Spacer(modifier = Modifier.height(20.dp))
+
+
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier
                 .fillMaxHeight()
                 .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            content = {
-                items(filteredRecipes) { recipe ->
-                    RecipeCard(
-                        recipe = recipe
-                    )
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(filteredRecipes) { recipe ->
+                RecipeCard(recipe = recipe) {
+                    selectedRecipe.value = recipe
                 }
             }
-        )
+        }
 
         Spacer(modifier = Modifier.height(40.dp))
+
+        selectedRecipe.value?.let { recipe ->
+            androidx.compose.material3.AlertDialog(
+                onDismissRequest = { selectedRecipe.value = null },
+                title = {
+                    Text(
+                        text = recipe.title,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                },
+                text = {
+                    Column {
+                        Text("Description: ${recipe.description}")
+                        Text("Prep Time: ${recipe.prep_time} min")
+                        Text("Cook Time: ${recipe.cook_time} min")
+                        Text("Servings: ${recipe.servings}")
+                        Text("Difficulty: ${recipe.difficulty}")
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text("Instructions:", fontWeight = FontWeight.Bold)
+                        Text(recipe.instructions)
+                    }
+                },
+                confirmButton = {
+                    androidx.compose.material3.TextButton(onClick = { selectedRecipe.value = null }) {
+                        Text("Close")
+                    }
+                }
+            )
+        }
+
     }
 }

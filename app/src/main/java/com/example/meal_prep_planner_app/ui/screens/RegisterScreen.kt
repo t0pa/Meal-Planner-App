@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.VisualTransformation
 import com.example.meal_prep_planner_app.R
+import com.example.meal_prep_planner_app.model.Recipe
 import com.example.meal_prep_planner_app.ui.viewmodel.UserViewModel
 
 @Composable
@@ -209,3 +210,7 @@ fun RegistrationScreen(userViewModel: UserViewModel, onLoginNav: () -> Unit) {
 fun isValidEmail(email: String): Boolean {
     return Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }
+
+
+
+
