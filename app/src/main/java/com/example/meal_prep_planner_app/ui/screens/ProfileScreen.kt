@@ -18,7 +18,9 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ProfileScreen(
     onLogout: () -> Unit = {},
-    onDelete: () -> Unit = {}
+    onDelete: () -> Unit = {},
+    onReportProblem: () -> Unit = {} // New callback
+
 ) {
     Column(
         modifier = Modifier
@@ -64,6 +66,23 @@ fun ProfileScreen(
             }
         }
 
+        Spacer(modifier = Modifier.height(16.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(2.dp, Color(0xFFFF9800), RoundedCornerShape(8.dp))
+                .clickable { onReportProblem() }
+                .padding(horizontal = 24.dp, vertical = 16.dp)
+        ) {
+            Text(
+                text = "Report a Problem",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.Medium,
+                    color = Color(0xFFFF9800)
+                ),
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally

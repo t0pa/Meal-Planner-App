@@ -1,6 +1,10 @@
 package com.example.meal_prep_planner_app.ui.navigation
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +29,7 @@ import kotlinx.serialization.Serializable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import com.example.meal_prep_planner_app.screens.ProfileScreen
 import com.example.meal_prep_planner_app.ui.screens.HomeScreen
@@ -153,6 +158,8 @@ fun AppNavHost(userViewModel: UserViewModel = hiltViewModel()) {
                     )
                                     }
                 composable<Profile> {
+                    val context = LocalContext.current // Get context for Intent
+
                     ProfileScreen(
                         onLogout = {
                             userViewModel.logout()
@@ -164,6 +171,18 @@ fun AppNavHost(userViewModel: UserViewModel = hiltViewModel()) {
                             userViewModel.deleteProfile()
                             navController.navigate(Login::class.qualifiedName!!) {
                                 popUpTo(Auth) { inclusive = true }
+                            }
+                        },
+                        onReportProblem = {
+                            val emailIntent = Intent(Intent.ACTION_SENDTO).apply {
+                                data = Uri.parse("mailto:support@example.com") // Replace with your email
+                                putExtra(Intent.EXTRA_SUBJECT, "Meal Prep Planner Issue")
+                                putExtra(Intent.EXTRA_TEXT, "Describe the problem here...")
+                            }
+                            try {
+                                context.startActivity(emailIntent)
+                            } catch (e: ActivityNotFoundException) {
+                                Toast.makeText(context, "No email app installed!", Toast.LENGTH_SHORT).show()
                             }
                         }
                     )
