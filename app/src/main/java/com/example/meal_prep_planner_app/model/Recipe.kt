@@ -28,6 +28,6 @@ data class Recipe(
     val servings: Int,
     val difficulty: String,
     val image_url: String,
-    val user_id: Int,
+    val user_id: Int?,
     val instructions: String
 )
