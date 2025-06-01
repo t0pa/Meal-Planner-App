@@ -30,6 +30,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +42,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.meal_prep_planner_app.ui.viewmodel.MealPlanViewModel
+import com.example.meal_prep_planner_app.ui.viewmodel.UserViewModel
+import com.example.meal_prep_planner_app.model.MealPlan
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -55,9 +61,19 @@ data class DayItem(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun WeeklyPlannerScreen(
+    mealPlanViewModel: MealPlanViewModel = hiltViewModel(),
+    userViewModel : UserViewModel,
     onAddMealClick: () -> Unit = {},
     onDaySlotClick: (day: String, date: Int) -> Unit = { _, _ -> }
-) {
+){
+    val loggedUser by userViewModel.loggedUser.collectAsState()
+    val mealPlans by mealPlanViewModel.mealPlans.collectAsState()
+    val error by mealPlanViewModel.error.collectAsState()
+
+    LaunchedEffect(loggedUser?.id) {
+        loggedUser?.id?.let { mealPlanViewModel.loadMealPlans(it) }
+    }
+
     val colorScheme = MaterialTheme.colorScheme
     val typography = MaterialTheme.typography
 
@@ -79,32 +95,37 @@ fun WeeklyPlannerScreen(
             )
         }
     }
+    val mealPlansPerDay = remember(mealPlans) {
+        mealPlans.groupBy { plan ->
+            plan.date  // group by the full date string, e.g. "2025-06-01"
+        }
+    }
 
-    // MOCK DATA FOR MEALS
-    val mockMealPlansPerDay = mapOf(
-        "M" to listOf(
-            MealPlan("Breakfast", "Oatmeal"),
-            MealPlan("Brunch", "Avocado Toast"),
-            MealPlan("Lunch", "Grilled Chicken"),
-            MealPlan("Dinner", "Pasta")
-        ),
-        "T" to listOf(
-            MealPlan("Breakfast", "Eggs"),
-            MealPlan("Lunch", "Burger"),
-            MealPlan("Dinner", "Salad")
-        ),
-        "W" to listOf(), // Empty
-        "T" to listOf(
-            MealPlan("Breakfast", "Smoothie", isEmpty = false),
-            MealPlan("Lunch", "Soup", isEmpty = false)
-        ),
-        "F" to listOf(), // Empty
-        "S" to listOf(
-            MealPlan("Breakfast", "Pancakes"),
-            MealPlan("Lunch", "Pizza")
-        ),
-        "S" to listOf() // Empty
-    )
+//    // MOCK DATA FOR MEALS
+//    val mockMealPlansPerDay = mapOf(
+//        "M" to listOf(
+//            MealPlan("Breakfast", "Oatmeal"),
+//            MealPlan("Brunch", "Avocado Toast"),
+//            MealPlan("Lunch", "Grilled Chicken"),
+//            MealPlan("Dinner", "Pasta")
+//        ),
+//        "T" to listOf(
+//            MealPlan("Breakfast", "Eggs"),
+//            MealPlan("Lunch", "Burger"),
+//            MealPlan("Dinner", "Salad")
+//        ),
+//        "W" to listOf(), // Empty
+//        "T" to listOf(
+//            MealPlan("Breakfast", "Smoothie", isEmpty = false),
+//            MealPlan("Lunch", "Soup", isEmpty = false)
+//        ),
+//        "F" to listOf(), // Empty
+//        "S" to listOf(
+//            MealPlan("Breakfast", "Pancakes"),
+//            MealPlan("Lunch", "Pizza")
+//        ),
+//        "S" to listOf() // Empty
+//    )
 
 
     Column(
@@ -186,7 +207,8 @@ fun WeeklyPlannerScreen(
                     val dayItem = weekDays[index]
                     DayColumn(
                         dayItem = dayItem,
-                        mealPlans = mockMealPlansPerDay[dayItem.dayOfWeek] ?: emptyList(),
+                        mealPlans = mealPlansPerDay[weekStart.plusDays(index.toLong()).toString()] ?: emptyList()
+                        ,
                         onSlotClick = { onDaySlotClick(dayItem.dayOfWeek, dayItem.date) },
                         modifier = Modifier
                             .width(100.dp)
@@ -283,11 +305,6 @@ private fun DayColumn(
     }
 }
 
-data class MealPlan(
-    val mealType: String,
-    val name: String,
-    val isEmpty: Boolean = false
-)
 
 @Composable
 fun MealSlot(
@@ -301,18 +318,12 @@ fun MealSlot(
         modifier = modifier
             .fillMaxWidth()
             .background(
-                color = if (mealPlan.isEmpty)
-                    colorScheme.surfaceVariant.copy(alpha = 0.3f)
-                else
-                    colorScheme.secondaryContainer,
+                color = colorScheme.secondaryContainer,
                 shape = RoundedCornerShape(8.dp)
             )
             .border(
                 width = 1.dp,
-                color = if (mealPlan.isEmpty)
-                    colorScheme.outline.copy(alpha = 0.5f)
-                else
-                    colorScheme.secondary,
+                color = colorScheme.secondary,
                 shape = RoundedCornerShape(8.dp)
             )
             .clickable(onClick = onClick)
@@ -321,17 +332,15 @@ fun MealSlot(
     ) {
         Column {
             Text(
-                mealPlan.mealType,
+                mealPlan.meal_type,
                 style = MaterialTheme.typography.labelMedium,
                 color = colorScheme.onSecondaryContainer
             )
-            if (!mealPlan.isEmpty) {
-                Text(
-                    mealPlan.name,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = colorScheme.onSecondaryContainer
-                )
-            }
+            Text(
+                "Recipe #${mealPlan.recipe_id}", // Placeholder until you load actual recipe name
+                style = MaterialTheme.typography.bodyMedium,
+                color = colorScheme.onSecondaryContainer
+            )
         }
     }
 }
