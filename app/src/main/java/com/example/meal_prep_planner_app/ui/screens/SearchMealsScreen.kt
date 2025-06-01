@@ -91,6 +91,9 @@ fun SearchMealsScreen(viewModel: RecipeViewModel = hiltViewModel()) {
             singleLine = true
         )
 
+        Spacer(modifier = Modifier.height(20.dp))
+
+
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier
