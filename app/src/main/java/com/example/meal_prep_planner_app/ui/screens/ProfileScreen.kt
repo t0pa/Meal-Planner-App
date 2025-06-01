@@ -1,4 +1,4 @@
-package com.example.meal_prep_planner_app.screens
+package com.example.meal_prep_planner_app.ui.screens
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.BorderStroke
@@ -14,13 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-
 @Composable
 fun ProfileScreen(
     onLogout: () -> Unit = {},
     onDelete: () -> Unit = {},
-    onReportProblem: () -> Unit = {} // New callback
-
+    onReportProblem: () -> Unit = {},
+    onNotifyMe: () -> Unit = {}  // New callback for notifications
 ) {
     Column(
         modifier = Modifier
@@ -48,11 +47,11 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(40.dp))
 
+            // Favorite Recipes Button
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(2.dp, Color(0xFF4CAF50), RoundedCornerShape(8.dp))
-                    //.clickable { onNavigate("favorites") }
                     .padding(horizontal = 24.dp, vertical = 16.dp)
             ) {
                 Text(
@@ -64,25 +63,50 @@ fun ProfileScreen(
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
-        }
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(2.dp, Color(0xFFFF9800), RoundedCornerShape(8.dp))
-                .clickable { onReportProblem() }
-                .padding(horizontal = 24.dp, vertical = 16.dp)
-        ) {
-            Text(
-                text = "Report a Problem",
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    fontWeight = FontWeight.Medium,
-                    color = Color(0xFFFF9800)
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Report Problem Button
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(2.dp, Color(0xFFFF9800), RoundedCornerShape(8.dp))
+                    .clickable { onReportProblem() }
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
+            ) {
+                Text(
+                    text = "Report a Problem",
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.Medium,
+                        color = Color(0xFFFF9800)
+                    ),
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // NEW: Notify Me Button
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(2.dp, Color(0xFF2196F3), RoundedCornerShape(8.dp))
+                    .clickable { onNotifyMe() }
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
+            ) {
+                Text(
+                    text = "Notify Me About Meals",
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.Medium,
+                        color = Color(0xFF2196F3)
                 ),
                 modifier = Modifier.align(Alignment.Center)
-            )
+                )
+            }
         }
+
+
+
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
