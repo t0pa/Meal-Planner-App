@@ -1,6 +1,7 @@
 package com.example.meal_prep_planner_app.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
 import androidx.room.Room
 import com.example.meal_prep_planner_app.dao.*
 import com.example.meal_prep_planner_app.database.AppDatabase
@@ -14,11 +15,13 @@ import com.example.meal_prep_planner_app.repository.RecipeRepository
 import com.example.meal_prep_planner_app.repository.RecipeRepositoryImpl
 import com.example.meal_prep_planner_app.repository.UserRepository
 import com.example.meal_prep_planner_app.repository.UserRepositoryImpl
+import com.example.meal_prep_planner_app.session.SessionManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import java.util.prefs.Preferences
 import javax.inject.Singleton
 import javax.inject.Named
 
@@ -35,6 +38,8 @@ object DatabaseModule {
             "meal_prep_planner.db"
         ).fallbackToDestructiveMigration(true).build()
     }
+
+
 
     @Provides
     fun provideUserDao(appDatabase: AppDatabase): UserDao = appDatabase.userDao()

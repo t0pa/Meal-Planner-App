@@ -30,16 +30,30 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextButton
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.meal_prep_planner_app.ui.viewmodel.MealPlanViewModel
+import com.example.meal_prep_planner_app.ui.viewmodel.UserViewModel
+import com.example.meal_prep_planner_app.model.MealPlan
+import com.example.meal_prep_planner_app.ui.viewmodel.RecipeViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -55,9 +69,29 @@ data class DayItem(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun WeeklyPlannerScreen(
+    mealPlanViewModel: MealPlanViewModel = hiltViewModel(),
+    recipeViewModel: RecipeViewModel = hiltViewModel(),
+
+    userViewModel : UserViewModel,
     onAddMealClick: () -> Unit = {},
     onDaySlotClick: (day: String, date: Int) -> Unit = { _, _ -> }
-) {
+){
+    val loggedUserState = userViewModel.loggedUser.collectAsState()
+    val loggedUser = loggedUserState.value
+
+    val mealPlans by mealPlanViewModel.mealPlans.collectAsState()
+    val error by mealPlanViewModel.error.collectAsState()
+    var showDialog by remember { mutableStateOf(false) }
+    var dialogError by remember { mutableStateOf<String?>(null) }
+
+
+    LaunchedEffect(loggedUser?.id) {
+        loggedUser?.id?.let {
+            mealPlanViewModel.loadMealPlans(it)
+            recipeViewModel.loadRecipes(loggedUser.id)
+        }
+    }
+
     val colorScheme = MaterialTheme.colorScheme
     val typography = MaterialTheme.typography
 
@@ -79,33 +113,45 @@ fun WeeklyPlannerScreen(
             )
         }
     }
+    val mealPlansPerDay = remember(mealPlans) {
+        mealPlans.groupBy { plan ->
+            plan.date
+        }
+    }
 
-    // MOCK DATA FOR MEALS
-    val mockMealPlansPerDay = mapOf(
-        "M" to listOf(
-            MealPlan("Breakfast", "Oatmeal"),
-            MealPlan("Brunch", "Avocado Toast"),
-            MealPlan("Lunch", "Grilled Chicken"),
-            MealPlan("Dinner", "Pasta")
-        ),
-        "T" to listOf(
-            MealPlan("Breakfast", "Eggs"),
-            MealPlan("Lunch", "Burger"),
-            MealPlan("Dinner", "Salad")
-        ),
-        "W" to listOf(), // Empty
-        "T" to listOf(
-            MealPlan("Breakfast", "Smoothie", isEmpty = false),
-            MealPlan("Lunch", "Soup", isEmpty = false)
-        ),
-        "F" to listOf(), // Empty
-        "S" to listOf(
-            MealPlan("Breakfast", "Pancakes"),
-            MealPlan("Lunch", "Pizza")
-        ),
-        "S" to listOf() // Empty
-    )
+    if (showDialog) {
+        AddMealPlanDialog(
+            onDismiss = { showDialog = false; dialogError = null },
+            errorMessage = dialogError,
+            recipeViewModel = recipeViewModel, // Add this
+            onConfirm = { recipeName, mealType, date ->
+                val recipe = recipeViewModel.recipes.value.find {
+                    it.title.equals(recipeName, ignoreCase = true)
+                }
 
+                if (recipe != null && loggedUser != null) {
+                    try {
+                        LocalDate.parse(date)
+                        val newPlan = MealPlan(
+                            id = 0,
+                            user_id = loggedUser.id,
+                            recipe_id = recipe.id,
+                            meal_type = mealType,
+                            date = date
+                        )
+                        mealPlanViewModel.addMealPlan(newPlan)
+                        showDialog = false
+                        dialogError = null
+                    } catch (e: Exception) {
+                        dialogError = "Invalid date format. Use YYYY-MM-DD."
+                    }
+                } else {
+                    dialogError = if (loggedUser == null) "User not logged in."
+                    else "Recipe '$recipeName' not found."
+                }
+            }
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -181,27 +227,28 @@ fun WeeklyPlannerScreen(
                     .height(600.dp)
             ) {
                 items(
-                    weekDays.size
-                ) { index ->
-                    val dayItem = weekDays[index]
+                    items = weekDays,
+                    key = { day -> day.date }
+                ) { dayItem ->
                     DayColumn(
                         dayItem = dayItem,
-                        mealPlans = mockMealPlansPerDay[dayItem.dayOfWeek] ?: emptyList(),
+                        mealPlans = mealPlansPerDay[weekStart.plusDays(weekDays.indexOf(dayItem).toLong()).toString()] ?: emptyList(),
                         onSlotClick = { onDaySlotClick(dayItem.dayOfWeek, dayItem.date) },
+                        recipeViewModel = recipeViewModel,
                         modifier = Modifier
                             .width(100.dp)
                             .padding(horizontal = 4.dp)
                     )
-
                 }
             }
+
 
             Spacer(modifier = Modifier.height(24.dp))
         }
 
         // add meal button
         Button(
-            onClick = onAddMealClick,
+            onClick = { showDialog = true },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
@@ -210,8 +257,9 @@ fun WeeklyPlannerScreen(
                 contentColor = Color.White
             )
         ) {
-            Text("Add meal plan", fontSize = 16.sp)
+            Text("Add meal plan")
         }
+
     }
 }
 
@@ -220,9 +268,15 @@ private fun DayColumn(
     dayItem: DayItem,
     mealPlans: List<MealPlan> = emptyList(),
     onSlotClick: () -> Unit,
+    recipeViewModel: RecipeViewModel,
     modifier: Modifier = Modifier
 ) {
     val colorScheme = MaterialTheme.colorScheme
+    val mealTypeOrder = mapOf(
+        "Breakfast" to 1,
+        "Lunch" to 2,
+        "Dinner" to 3,
+    )
 
     Column(
         modifier = modifier,
@@ -249,9 +303,11 @@ private fun DayColumn(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            mealPlans.forEach { plan ->
+            val sortedPlans = mealPlans.sortedBy { mealTypeOrder[it.meal_type] ?: Int.MAX_VALUE }
+            sortedPlans.forEach { plan ->
                 MealSlot(
                     mealPlan = plan,
+                    recipeViewModel = recipeViewModel,
                     onClick = onSlotClick,
                     modifier = Modifier.height(100.dp)
                 )
@@ -283,36 +339,33 @@ private fun DayColumn(
     }
 }
 
-data class MealPlan(
-    val mealType: String,
-    val name: String,
-    val isEmpty: Boolean = false
-)
 
 @Composable
 fun MealSlot(
     mealPlan: MealPlan,
+    recipeViewModel: RecipeViewModel,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val colorScheme = MaterialTheme.colorScheme
 
+    val selectedRecipe by recipeViewModel.selectedRecipe.collectAsState()
+    val recipe = selectedRecipe[mealPlan.recipe_id]
+
+    LaunchedEffect(mealPlan.recipe_id) {
+        recipeViewModel.getRecipeById(mealPlan.recipe_id)
+    }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
             .background(
-                color = if (mealPlan.isEmpty)
-                    colorScheme.surfaceVariant.copy(alpha = 0.3f)
-                else
-                    colorScheme.secondaryContainer,
+                color = colorScheme.secondaryContainer,
                 shape = RoundedCornerShape(8.dp)
             )
             .border(
                 width = 1.dp,
-                color = if (mealPlan.isEmpty)
-                    colorScheme.outline.copy(alpha = 0.5f)
-                else
-                    colorScheme.secondary,
+                color = colorScheme.secondary,
                 shape = RoundedCornerShape(8.dp)
             )
             .clickable(onClick = onClick)
@@ -321,17 +374,139 @@ fun MealSlot(
     ) {
         Column {
             Text(
-                mealPlan.mealType,
+                mealPlan.meal_type,
                 style = MaterialTheme.typography.labelMedium,
                 color = colorScheme.onSecondaryContainer
             )
-            if (!mealPlan.isEmpty) {
-                Text(
-                    mealPlan.name,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = colorScheme.onSecondaryContainer
-                )
-            }
+            Text(
+                text = recipe?.title ?: "Recipe #${mealPlan.recipe_id}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = colorScheme.onSecondaryContainer
+            )
         }
     }
 }
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun AddMealPlanDialog(
+    onDismiss: () -> Unit,
+    onConfirm: (recipeName: String, mealType: String, date: String) -> Unit,
+    errorMessage: String?,
+    recipeViewModel: RecipeViewModel
+) {
+    var recipeName by remember { mutableStateOf("") }
+    var mealType by remember { mutableStateOf("") }
+    var date by remember { mutableStateOf(LocalDate.now().toString()) }
+
+    val allRecipes by recipeViewModel.recipes.collectAsState()
+    var showRecipeDropdown by remember { mutableStateOf(false) }
+    var showMealTypeDropdown by remember { mutableStateOf(false) }
+    val mealTypes = listOf("Breakfast", "Lunch", "Dinner")
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Add Meal Plan") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Box {
+                    OutlinedTextField(
+                        value = recipeName,
+                        onValueChange = { recipeName = it },
+                        label = { Text("Recipe Name") },
+                        trailingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.ArrowDropDown,
+                                contentDescription = "Show recipes",
+                                modifier = Modifier.clickable { showRecipeDropdown = true }
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    DropdownMenu(
+                        expanded = showRecipeDropdown,
+                        onDismissRequest = { showRecipeDropdown = false }
+                    ) {
+                        allRecipes.filter {
+                            it.title.contains(recipeName, ignoreCase = true)
+                        }.forEach { recipe ->
+                            DropdownMenuItem(
+                                text = { Text(recipe.title) },
+                                onClick = {
+                                    recipeName = recipe.title
+                                    showRecipeDropdown = false
+                                }
+                            )
+                        }
+                    }
+                }
+
+                Box {
+                    OutlinedTextField(
+                        value = mealType,
+                        onValueChange = { mealType = it },
+                        label = { Text("Meal Type") },
+                        trailingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.ArrowDropDown,
+                                contentDescription = "Show meal types",
+                                modifier = Modifier.clickable { showMealTypeDropdown = true }
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    DropdownMenu(
+                        expanded = showMealTypeDropdown,
+                        onDismissRequest = { showMealTypeDropdown = false }
+                    ) {
+                        mealTypes.forEach { type ->
+                            DropdownMenuItem(
+                                text = { Text(type) },
+                                onClick = {
+                                    mealType = type
+                                    showMealTypeDropdown = false
+                                }
+                            )
+                        }
+                    }
+                }
+
+                OutlinedTextField(
+                    value = date,
+                    onValueChange = { date = it },
+                    label = { Text("Date (YYYY-MM-DD)") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                if (errorMessage != null) {
+                    Text(
+                        text = errorMessage,
+                        color = Color.Red,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            val isValid = recipeName.isNotBlank() && mealType.isNotBlank() && date.isNotBlank()
+            TextButton(
+                onClick = {
+                    if (isValid) {
+                        onConfirm(recipeName.trim(), mealType.trim(), date.trim())
+                    }
+                },
+                enabled = isValid
+            ) {
+                Text("Add")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
+}
+
