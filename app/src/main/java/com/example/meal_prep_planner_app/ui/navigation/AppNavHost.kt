@@ -35,6 +35,7 @@ import com.example.meal_prep_planner_app.ui.screens.WeeklyPlannerScreen
 import com.example.meal_prep_planner_app.ui.screens.navigation.BottomNavBar
 import com.example.meal_prep_planner_app.ui.screens.navigation.BottomNavItem
 import com.example.meal_prep_planner_app.ui.viewmodel.MealPlanViewModel
+import com.example.meal_prep_planner_app.ui.viewmodel.RecipeViewModel
 
 @Serializable object Auth
 @Serializable object Login
@@ -143,10 +144,14 @@ fun AppNavHost(userViewModel: UserViewModel = hiltViewModel()) {
                 }
                 composable<Weekly> {
                     val mealPlanViewModel: MealPlanViewModel = hiltViewModel()
+                    val recipeViewModel: RecipeViewModel = hiltViewModel()
+
                     WeeklyPlannerScreen(
-                        viewModel = mealPlanViewModel,
+                        mealPlanViewModel = mealPlanViewModel,
+                        recipeViewModel = recipeViewModel,
                         userViewModel = userViewModel
-                    )                }
+                    )
+                                    }
                 composable<Profile> {
                     ProfileScreen(
                         onLogout = {

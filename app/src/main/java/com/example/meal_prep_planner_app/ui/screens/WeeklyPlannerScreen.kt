@@ -36,6 +36,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.foundation.lazy.items
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,6 +48,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.meal_prep_planner_app.ui.viewmodel.MealPlanViewModel
 import com.example.meal_prep_planner_app.ui.viewmodel.UserViewModel
 import com.example.meal_prep_planner_app.model.MealPlan
+import com.example.meal_prep_planner_app.ui.viewmodel.RecipeViewModel
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -62,6 +65,8 @@ data class DayItem(
 @Composable
 fun WeeklyPlannerScreen(
     mealPlanViewModel: MealPlanViewModel = hiltViewModel(),
+    recipeViewModel: RecipeViewModel = hiltViewModel(),
+
     userViewModel : UserViewModel,
     onAddMealClick: () -> Unit = {},
     onDaySlotClick: (day: String, date: Int) -> Unit = { _, _ -> }
@@ -202,21 +207,21 @@ fun WeeklyPlannerScreen(
                     .height(600.dp)
             ) {
                 items(
-                    weekDays.size
-                ) { index ->
-                    val dayItem = weekDays[index]
+                    items = weekDays,
+                    key = { day -> day.date } // Or a more stable key like day.dayOfWeek + date string
+                ) { dayItem ->
                     DayColumn(
                         dayItem = dayItem,
-                        mealPlans = mealPlansPerDay[weekStart.plusDays(index.toLong()).toString()] ?: emptyList()
-                        ,
+                        mealPlans = mealPlansPerDay[weekStart.plusDays(weekDays.indexOf(dayItem).toLong()).toString()] ?: emptyList(),
                         onSlotClick = { onDaySlotClick(dayItem.dayOfWeek, dayItem.date) },
+                        recipeViewModel = recipeViewModel,
                         modifier = Modifier
                             .width(100.dp)
                             .padding(horizontal = 4.dp)
                     )
-
                 }
             }
+
 
             Spacer(modifier = Modifier.height(24.dp))
         }
@@ -242,6 +247,7 @@ private fun DayColumn(
     dayItem: DayItem,
     mealPlans: List<MealPlan> = emptyList(),
     onSlotClick: () -> Unit,
+    recipeViewModel: RecipeViewModel,
     modifier: Modifier = Modifier
 ) {
     val colorScheme = MaterialTheme.colorScheme
@@ -274,6 +280,7 @@ private fun DayColumn(
             mealPlans.forEach { plan ->
                 MealSlot(
                     mealPlan = plan,
+                    recipeViewModel = recipeViewModel,
                     onClick = onSlotClick,
                     modifier = Modifier.height(100.dp)
                 )
@@ -309,10 +316,19 @@ private fun DayColumn(
 @Composable
 fun MealSlot(
     mealPlan: MealPlan,
+    recipeViewModel: RecipeViewModel,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val colorScheme = MaterialTheme.colorScheme
+
+    // Observe selected recipe state for this recipe id
+    val selectedRecipe by recipeViewModel.selectedRecipe.collectAsState()
+
+    // Trigger loading recipe on first composition or when mealPlan changes
+    LaunchedEffect(mealPlan.recipe_id) {
+        recipeViewModel.getRecipeById(mealPlan.recipe_id)
+    }
 
     Box(
         modifier = modifier
@@ -337,10 +353,11 @@ fun MealSlot(
                 color = colorScheme.onSecondaryContainer
             )
             Text(
-                "Recipe #${mealPlan.recipe_id}", // Placeholder until you load actual recipe name
+                text = selectedRecipe?.title ?: "Recipe #${mealPlan.recipe_id}",
                 style = MaterialTheme.typography.bodyMedium,
                 color = colorScheme.onSecondaryContainer
             )
         }
     }
 }
+
