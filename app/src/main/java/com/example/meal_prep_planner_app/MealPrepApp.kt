@@ -26,9 +26,9 @@ class       MealPrepApp : Application() {
         super.onCreate()
 
         CoroutineScope(Dispatchers.IO).launch {
-//
+////
 //            insertMockUsers()
-//
+////
 //            insertMockIngredients()
 //
 //            insertMockRecipes()
@@ -36,11 +36,11 @@ class       MealPrepApp : Application() {
 //            insertMockMealPlans()
 //
 //            insertMockRecipeIngredients()
-//
+////
 
 
-//            database.userDao().getUserById(1)
-//            Log.d("DatabaseTest", "Database initialized")
+            database.userDao().getUserById(1)
+            Log.d("DatabaseTest", "Database initialized")
 
         }
     }
