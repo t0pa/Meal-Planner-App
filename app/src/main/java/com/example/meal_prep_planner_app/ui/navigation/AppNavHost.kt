@@ -152,7 +152,10 @@ fun AppNavHost(userViewModel: UserViewModel = hiltViewModel()) {
                             }
                         },
                         onDelete = {
-                            // TBA : delete logic
+                            userViewModel.deleteProfile()
+                            navController.navigate(Login::class.qualifiedName!!) {
+                                popUpTo(Auth) { inclusive = true }
+                            }
                         }
                     )
                 }

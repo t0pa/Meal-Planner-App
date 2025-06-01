@@ -89,6 +89,26 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    fun deleteProfile() {
+        viewModelScope.launch {
+            try {
+                val user = _loggedUser.value
+                if (user != null) {
+                    userRepo.delete(user)
+                    sessionManager.clearSession()
+                    _loginStatus.value = false
+                    _loggedUser.value = null
+                    Log.d("UserViewModel", "User profile deleted.")
+                } else {
+                    _error.value = "Cannot delete profile: No user is logged in."
+                }
+            } catch (e: Exception) {
+                _error.value = "Error deleting profile: ${e.message}"
+                Log.e("UserViewModel", "Delete error", e)
+            }
+
+        }
+    }
 
     private fun hashPassword(password: String): String {
         val bytes = password.toByteArray()

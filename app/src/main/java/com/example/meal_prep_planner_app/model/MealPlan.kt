@@ -30,5 +30,5 @@ data class MealPlan(
     val user_id: Int,
     val recipe_id: Int,
     val meal_type: String,
-    val datetime: String
+    val date: String
 )
