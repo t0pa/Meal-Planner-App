@@ -102,36 +102,9 @@ fun WeeklyPlannerScreen(
     }
     val mealPlansPerDay = remember(mealPlans) {
         mealPlans.groupBy { plan ->
-            plan.date  // group by the full date string, e.g. "2025-06-01"
+            plan.date
         }
     }
-
-//    // MOCK DATA FOR MEALS
-//    val mockMealPlansPerDay = mapOf(
-//        "M" to listOf(
-//            MealPlan("Breakfast", "Oatmeal"),
-//            MealPlan("Brunch", "Avocado Toast"),
-//            MealPlan("Lunch", "Grilled Chicken"),
-//            MealPlan("Dinner", "Pasta")
-//        ),
-//        "T" to listOf(
-//            MealPlan("Breakfast", "Eggs"),
-//            MealPlan("Lunch", "Burger"),
-//            MealPlan("Dinner", "Salad")
-//        ),
-//        "W" to listOf(), // Empty
-//        "T" to listOf(
-//            MealPlan("Breakfast", "Smoothie", isEmpty = false),
-//            MealPlan("Lunch", "Soup", isEmpty = false)
-//        ),
-//        "F" to listOf(), // Empty
-//        "S" to listOf(
-//            MealPlan("Breakfast", "Pancakes"),
-//            MealPlan("Lunch", "Pizza")
-//        ),
-//        "S" to listOf() // Empty
-//    )
-
 
     Column(
         modifier = Modifier
@@ -324,6 +297,7 @@ fun MealSlot(
 
     // Observe selected recipe state for this recipe id
     val selectedRecipe by recipeViewModel.selectedRecipe.collectAsState()
+    val recipe = selectedRecipe[mealPlan.recipe_id]
 
     // Trigger loading recipe on first composition or when mealPlan changes
     LaunchedEffect(mealPlan.recipe_id) {
@@ -353,7 +327,7 @@ fun MealSlot(
                 color = colorScheme.onSecondaryContainer
             )
             Text(
-                text = selectedRecipe?.title ?: "Recipe #${mealPlan.recipe_id}",
+                text = recipe?.title ?: "Recipe #${mealPlan.recipe_id}",
                 style = MaterialTheme.typography.bodyMedium,
                 color = colorScheme.onSecondaryContainer
             )

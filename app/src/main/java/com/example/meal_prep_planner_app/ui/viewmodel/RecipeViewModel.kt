@@ -21,8 +21,8 @@ class RecipeViewModel @Inject constructor(
     private val _recipes = MutableStateFlow<List<Recipe>>(emptyList())
     val recipes: StateFlow<List<Recipe>> = _recipes
 
-    private val _selectedRecipe = MutableStateFlow<Recipe?>(null)
-    val selectedRecipe: StateFlow<Recipe?> = _selectedRecipe
+    private val _selectedRecipe = MutableStateFlow<Map<Int, Recipe>>(emptyMap())
+    val selectedRecipe: StateFlow<Map<Int, Recipe>> = _selectedRecipe
 
     private val _ingredients = MutableStateFlow<List<RecipeIngredient>>(emptyList())
     val ingredients: StateFlow<List<RecipeIngredient>> = _ingredients
@@ -48,8 +48,10 @@ class RecipeViewModel @Inject constructor(
 
     fun getRecipeById(id: Int) {
         viewModelScope.launch {
+            if (_selectedRecipe.value.containsKey(id)) return@launch // already cached
             try {
-                _selectedRecipe.value = recipeRepo.getRecipeById(id)
+                val recipe = recipeRepo.getRecipeById(id)
+                _selectedRecipe.value = (_selectedRecipe.value + (id to recipe)) as Map<Int, Recipe>
             } catch (e: Exception) {
                 _error.value = "Failed to load recipe: ${e.message}"
             }
