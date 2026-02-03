@@ -7,13 +7,11 @@ Android meal planning app built with Kotlin for a university project.
 - Manage recipes
 - Generate shopping lists
 
- ##Architecture: MVVM
-
 ## Tech
 - Kotlin
 - Android SDK
 - Room DB
-
+- Architecture: MVVM
 ## Context
 University project, forked from a team repository. This was my first/early Android project, so the code quality reflects my learning process at the time.
 
